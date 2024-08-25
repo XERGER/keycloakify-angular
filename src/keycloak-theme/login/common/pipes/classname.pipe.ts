@@ -14,18 +14,23 @@ export class KcClassPipe implements PipeTransform {
   }
 
   private loadClasses(): void {
-    const params = {
+    try {
+      const params = {
         doUseDefaultCss: true,
-        classes: classData
-    };
-    this.kcClsx = getKcClsx(params).kcClsx; 
+        classes: classData,
+      };
+      this.kcClsx = getKcClsx(params).kcClsx;
+    } catch (error) {
+      console.error('Error loading classes for KcClassPipe:', error);
+      this.kcClsx = undefined;
+    }
   }
 
   transform(value: any): string {
-    return this.kcClsx ? this.kcClsx(value) : '';
+    if (!this.kcClsx) {
+      console.warn('kcClsx is not initialized. Returning empty string.');
+      return '';
+    }
+    return this.kcClsx(value);
   }
 }
-
-
-
-
